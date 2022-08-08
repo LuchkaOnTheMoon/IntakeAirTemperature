@@ -1,3 +1,4 @@
+# Scripts
 This folder contains the following GNU Octave scripts:
 - scr_MeasuredDataFitting.m: script used to perform data fitting and calculate thermistors' parameters (Beta and R25) starting from measured datapoints.
 - scr_TheoreticalDataFitting.m: similar to "scr_MeasuredDataFitting.m" and used to calculate thermistors' parameters starting from theoretical datapoints.
