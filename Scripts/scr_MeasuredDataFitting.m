@@ -43,7 +43,7 @@ trim = [+18, -14];
 % Initial model guess, for data fitting.
 % k0 = [R25, Beta];
 % R25: thermistor’s resistance @ 25°C [ohm]
-% Beta: thermistor’s beta value [adim].
+% Beta: thermistor’s beta value [K].
 k0 = [2000, 3829];
 
 %%%% PROCESSING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
