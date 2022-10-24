@@ -20,7 +20,7 @@ clear all; close all; clc;
 
 %%%% USER PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 R25 = 2100.3;               % Thermistors' resistance @ 25°C [Ohm].
-beta = 3422.5;              % Thermistors' beta value [adim].
+beta = 3422.5;              % Thermistors' beta value [K].
 Trange = [-10, +49];        % Air (ambient) temperature range [°C].
 Tdelta = [-1, -20];         % Temperature delta range [°C].
 filename = 'Rdelta.xlsx';   % Output table XLS filename.
