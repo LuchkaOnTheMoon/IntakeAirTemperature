@@ -122,7 +122,7 @@ else
     ylabel('Offset [°C]');
     plot(T, Tdelta, '-b');
     
-        % Plot all temperatures offsets.
+    % Plot all temperatures offsets.
     figure(); hold on; grid on;
     title('AFR Boost');
     xlabel('Air Temperature [°C]');
