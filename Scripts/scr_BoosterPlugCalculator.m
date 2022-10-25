@@ -21,15 +21,15 @@ clear all; close all; clc;
 
 %%%% USER PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Stock IAT parameters.
-% R25: thermistor’s resistance @ 25°C [ohm]
-% Beta: thermistor’s beta value [K].
+% R25: thermistorâ€™s resistance @ 25Â°C [ohm]
+% Beta: thermistorâ€™s beta value [K].
 R25  = 3000;
 Beta = 3850;
 
 % Desired AFR increment [%].
 AfrIncrement = 5;
 
-% Temperature range and step [°C].
+% Temperature range and step [Â°C].
 % Format is Tmin : Tstep : Tmax.
 T = -20 : 0.01 : +50;
 
@@ -37,7 +37,7 @@ T = -20 : 0.01 : +50;
 % CalculateOrCheck: 0 to calculate ideal BoosterPlug NTC parameters, otherwise 
 %                   given parameters are used to check for resulting AFR ratio 
 %                   increment flatness.
-% R25_BoosterPlug:  series NTC resistance @ 25°C [ohm]
+% R25_BoosterPlug:  series NTC resistance @ 25Â°C [ohm]
 % Beta_BoosterPlug: series NTC beta value [K]
 CalculateOrCheck = 1;
 R25_BoosterPlug  = 2732;
@@ -76,7 +76,7 @@ if (CalculateOrCheck == 0)
     % Plot all NTCs curves.
     figure(); hold on; grid on;
     title('NTC sensor curve');
-    xlabel('Air Temperature [°C]');
+    xlabel('Air Temperature [Â°C]');
     ylabel('Resistance [kOhm]');
     plot(T, Rstock ./ 1e3, '-r');
     plot(T, Rtarget ./ 1e3, '-b');
@@ -87,8 +87,8 @@ if (CalculateOrCheck == 0)
     % Plot all temperatures offsets.
     figure(); hold on; grid on;
     title('Negative temperature offset');
-    xlabel('Air Temperature [°C]');
-    ylabel('Offset [°C]');
+    xlabel('Air Temperature [Â°C]');
+    ylabel('Offset [Â°C]');
     plot(T, Tdelta, '-b');
     legend('Target');
 else
@@ -115,17 +115,17 @@ else
     % Calculate the corresponding AFR increment.
     AfrIncrement = 100 .* (Tdelta ./ (T + 273.15));
     
-    % Plot all temperatures offsets.
+    % Plot temperature offset achieved through series NTC thermistor.
     figure(); hold on; grid on;
     title('Negative temperature offset');
-    xlabel('Air Temperature [°C]');
-    ylabel('Offset [°C]');
+    xlabel('Air Temperature [Â°C]');
+    ylabel('Offset [Â°C]');
     plot(T, Tdelta, '-b');
     
-    % Plot all temperatures offsets.
+    % Plot AFR increment achieved through series NTC thermistor.
     figure(); hold on; grid on;
     title('AFR Boost');
-    xlabel('Air Temperature [°C]');
+    xlabel('Air Temperature [Â°C]');
     ylabel('AFR Boost [%]');
     plot(T, AfrIncrement, '-b');
 end
