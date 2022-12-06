@@ -21,8 +21,8 @@ clear all; close all; clc;
 
 %%%% USER PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Stock IAT parameters.
-% R25: thermistor’s resistance @ 25°C [ohm]
-% Beta: thermistor’s beta value [K].
+% R25: thermistor resistance @ 25°C [ohm]
+% Beta: thermistor beta value [K].
 R25  = 3000.0;
 Beta = 3950.0;
 
@@ -40,8 +40,8 @@ T = -20 : 0.01 : +50;
 % R25_BoosterPlug:  series NTC resistance @ 25°C [ohm]
 % Beta_BoosterPlug: series NTC beta value [K]
 CalculateOrCheck = 0;
-R25_BoosterPlug  = 3000;
-Beta_BoosterPlug = 3850;
+R25_BoosterPlug  = 3000.0;
+Beta_BoosterPlug = 3950.0;
 
 %%%% PROCESSING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if (CalculateOrCheck == 0)
@@ -115,14 +115,14 @@ else
     % Calculate the corresponding AFR delta.
     AfrDelta = (((T + 273.15) ./ (T + Tdelta + 273.15)) - 1) .* 100;
     
-    % Plot all temperatures offsets.
+    % Plot temperature offset achieved through series NTC thermistor.
     figure(1); hold on; grid on;
     title('Temperature offset');
     xlabel('Air Temperature [°C]');
     ylabel('Offset [°C]');
     plot(T, Tdelta, '-b');
     
-    % Plot all temperatures offsets.
+    % Plot AFR increment achieved through series NTC thermistor.
     figure(2); hold on; grid on;
     title('AFR Delta');
     xlabel('Air Temperature [°C]');
