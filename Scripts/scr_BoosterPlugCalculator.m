@@ -23,11 +23,11 @@ clear all; close all; clc;
 % Stock IAT parameters.
 % R25: thermistor’s resistance @ 25°C [ohm]
 % Beta: thermistor’s beta value [K].
-R25  = 3000;
-Beta = 3850;
+R25  = 3000.0;
+Beta = 3950.0;
 
-% Desired AFR increment [%].
-AfrIncrement = 5;
+% Desired AFR delta [%].
+AfrDelta = 6;
 
 % Temperature range and step [°C].
 % Format is Tmin : Tstep : Tmax.
@@ -39,8 +39,8 @@ T = -20 : 0.01 : +50;
 %                   increment flatness.
 % R25_BoosterPlug:  series NTC resistance @ 25°C [ohm]
 % Beta_BoosterPlug: series NTC beta value [K]
-CalculateOrCheck = 1;
-R25_BoosterPlug  = 2732;
+CalculateOrCheck = 0;
+R25_BoosterPlug  = 3000;
 Beta_BoosterPlug = 3850;
 
 %%%% PROCESSING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,14 +51,14 @@ if (CalculateOrCheck == 0)
 
     % For each ambient temperature level, calculate required temperature offset 
     % to achieve desired constant AFR increment.
-    Tdelta = (T + 273.15) * AfrIncrement / 100;
+    Tdelta = -(T + 273.15) * AfrDelta / (AfrDelta + 100);
 
     % Perform NTC model fitting to calculate and print R25 and Beta parameters 
     % of the ideal target NTC sensor by shifting T axis by Tdelta.
     k0 = [R25, Beta];
     f = @(k, x) (k(1) .* exp (k(2) .* (1 ./ (x + 273.15) - 1 / 298.15)));
     pkg load optim;
-    [B, R, J, COVB, MSE] = nlinfit(T + Tdelta, Rstock, f, k0);
+    [B, R, J, COVB, MSE] = nlinfit(T - Tdelta, Rstock, f, k0);
     printf("R25_Target = %.1f ohm, Beta_Target = %.1f K\n", B(1), B(2));
 
     % Calculate target NTC resistance over given temperature range.
@@ -74,7 +74,7 @@ if (CalculateOrCheck == 0)
     printf("R25_BoosterPlug = %.1f ohm, Beta_BoosterPlug = %.1f K\n", B(1), B(2));
 
     % Plot all NTCs curves.
-    figure(); hold on; grid on;
+    figure(1); hold on; grid on;
     title('NTC sensor curve');
     xlabel('Air Temperature [°C]');
     ylabel('Resistance [kOhm]');
@@ -85,8 +85,8 @@ if (CalculateOrCheck == 0)
     legend('Stock', 'Target', 'BoosterPlug only', 'Stock + BoosterPlug');
 
     % Plot all temperatures offsets.
-    figure(); hold on; grid on;
-    title('Negative temperature offset');
+    figure(2); hold on; grid on;
+    title('Temperature offset');
     xlabel('Air Temperature [°C]');
     ylabel('Offset [°C]');
     plot(T, Tdelta, '-b');
@@ -108,24 +108,24 @@ else
     for ii = 1:length(T)
         jj = max(find(Rstock >= Rtotal(ii)));
         if length(jj) > 0
-            Tdelta(ii) = T(ii) - T(jj);
+            Tdelta(ii) = T(jj) - T(ii);
         end
     end
     
-    % Calculate the corresponding AFR increment.
-    AfrIncrement = 100 .* (Tdelta ./ (T + 273.15));
+    % Calculate the corresponding AFR delta.
+    AfrDelta = (((T + 273.15) ./ (T + Tdelta + 273.15)) - 1) .* 100;
     
     % Plot all temperatures offsets.
-    figure(); hold on; grid on;
-    title('Negative temperature offset');
+    figure(1); hold on; grid on;
+    title('Temperature offset');
     xlabel('Air Temperature [°C]');
     ylabel('Offset [°C]');
     plot(T, Tdelta, '-b');
     
     % Plot all temperatures offsets.
-    figure(); hold on; grid on;
-    title('AFR Boost');
+    figure(2); hold on; grid on;
+    title('AFR Delta');
     xlabel('Air Temperature [°C]');
-    ylabel('AFR Boost [%]');
-    plot(T, AfrIncrement, '-b');
+    ylabel('AFR Delta [%]');
+    plot(T, AfrDelta, '-b');
 end
