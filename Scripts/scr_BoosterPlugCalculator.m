@@ -2,7 +2,7 @@
 %% sensor calculator (BoosterPlug approach), for GNU Octave (largely compatible 
 %% with Matlab).
 %%
-%% Copyright (C) 2022 - Luca Novarini
+%% Copyright (C) 2022 - Luchika De Sousa
 %% 
 %% This program is free software: you can redistribute it and/or modify it under
 %% the terms of the GNU General Public License as published by the Free Software
@@ -21,7 +21,7 @@ clear all; close all; clc;
 
 %%%% USER PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Stock IAT parameters.
-% R25: thermistor resistance @ 25캜 [ohm]
+% R25: thermistor resistance @ 25째C [ohm]
 % Beta: thermistor beta value [K].
 R25  = 3000.0;
 Beta = 3950.0;
@@ -29,7 +29,7 @@ Beta = 3950.0;
 % Desired AFR delta [%].
 AfrDelta = 6;
 
-% Temperature range and step [캜].
+% Temperature range and step [째C].
 % Format is Tmin : Tstep : Tmax.
 T = -20 : 0.01 : +50;
 
@@ -37,7 +37,7 @@ T = -20 : 0.01 : +50;
 % CalculateOrCheck: 0 to calculate ideal BoosterPlug NTC parameters, otherwise 
 %                   given parameters are used to check for resulting AFR ratio 
 %                   increment flatness.
-% R25_BoosterPlug:  series NTC resistance @ 25캜 [ohm]
+% R25_BoosterPlug:  series NTC resistance @ 25째C [ohm]
 % Beta_BoosterPlug: series NTC beta value [K]
 CalculateOrCheck = 0;
 R25_BoosterPlug  = 3000.0;
@@ -76,7 +76,7 @@ if (CalculateOrCheck == 0)
     % Plot all NTCs curves.
     figure(1); hold on; grid on;
     title('NTC sensor curve');
-    xlabel('Air Temperature [캜]');
+    xlabel('Air Temperature [째C]');
     ylabel('Resistance [kOhm]');
     plot(T, Rstock ./ 1e3, '-r');
     plot(T, Rtarget ./ 1e3, '-b');
@@ -87,8 +87,8 @@ if (CalculateOrCheck == 0)
     % Plot all temperatures offsets.
     figure(2); hold on; grid on;
     title('Temperature offset');
-    xlabel('Air Temperature [캜]');
-    ylabel('Offset [캜]');
+    xlabel('Air Temperature [째C]');
+    ylabel('Offset [째C]');
     plot(T, Tdelta, '-b');
     legend('Target');
 else
@@ -118,14 +118,14 @@ else
     % Plot temperature offset achieved through series NTC thermistor.
     figure(1); hold on; grid on;
     title('Temperature offset');
-    xlabel('Air Temperature [캜]');
-    ylabel('Offset [캜]');
+    xlabel('Air Temperature [째C]');
+    ylabel('Offset [째C]');
     plot(T, Tdelta, '-b');
     
     % Plot AFR increment achieved through series NTC thermistor.
     figure(2); hold on; grid on;
     title('AFR Delta');
-    xlabel('Air Temperature [캜]');
+    xlabel('Air Temperature [째C]');
     ylabel('AFR Delta [%]');
     plot(T, AfrDelta, '-b');
 end
