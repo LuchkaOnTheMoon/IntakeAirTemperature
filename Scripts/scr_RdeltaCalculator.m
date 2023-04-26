@@ -1,7 +1,7 @@
 %% Negative Temperature Coefficient (NTC) sensor series resistance delta 
 %% calculation script, for GNU Octave (largely compatible with Matlab).
 %%
-%% Copyright (C) 2022 - Luca Novarini
+%% Copyright (C) 2022 - Luchika De Sousa
 %% 
 %% This program is free software: you can redistribute it and/or modify it under
 %% the terms of the GNU General Public License as published by the Free Software
@@ -19,10 +19,10 @@
 clear all; close all; clc;
 
 %%%% USER PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-R25 = 2100.3;               % Thermistors' resistance @ 25°C [Ohm].
+R25 = 2100.3;               % Thermistors' resistance @ 25Â°C [Ohm].
 beta = 3422.5;              % Thermistors' beta value [K].
-Trange = [-10, +49];        % Air (ambient) temperature range [°C].
-Tdelta = [-1, -20];         % Temperature delta range [°C].
+Trange = [-10, +49];        % Air (ambient) temperature range [Â°C].
+Tdelta = [-1, -20];         % Temperature delta range [Â°C].
 filename = 'Rdelta.xlsx';   % Output table XLS filename.
 
 %%%% PROCESSING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
