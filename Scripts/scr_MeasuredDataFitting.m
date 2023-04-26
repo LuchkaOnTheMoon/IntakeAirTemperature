@@ -2,7 +2,7 @@
 %% measured data fitting script, for GNU Octave (largely compatible with 
 %% Matlab).
 %%
-%% Copyright (C) 2022 - Luca Novarini
+%% Copyright (C) 2022 - Luchika De Sousa
 %% 
 %% This program is free software: you can redistribute it and/or modify it under
 %% the terms of the GNU General Public License as published by the Free Software
@@ -22,8 +22,8 @@ clear all; close all; clc;
 %%%% USER PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % IAT measured data points.
-% x: air temperatures array [°C]
-% y: measured thermistor’s resistance [ohm]
+% x: air temperatures array [Â°C]
+% y: measured thermistorâ€™s resistance [ohm]
 x = [0 5 10 15 20 25 30];
 y = [9399 7263 5658 4441 3511 2795 2240];
 
@@ -32,8 +32,8 @@ trim = [0, 0];
 
 % Initial model guess, for data fitting.
 % k0 = [R25, Beta];
-% R25: thermistor’s resistance @ 25°C [ohm]
-% Beta: thermistor’s beta value [K].
+% R25: thermistorâ€™s resistance @ 25Â°C [ohm]
+% Beta: thermistorâ€™s beta value [K].
 k0 = [2700, 3950];
 
 %%%% PROCESSING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,5 +56,5 @@ R = f(B, T);
 plot(T, R ./ 1e3, '-b');
 scatter(x, y ./ 1e3, 'r');
 title('IAT NTC measured data fitting');
-xlabel('Air Temperature [°C]');
+xlabel('Air Temperature [Â°C]');
 ylabel('NTC Resistance [kOhm]');
