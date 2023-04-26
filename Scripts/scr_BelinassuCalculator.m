@@ -2,7 +2,7 @@
 %% replacement sensor calculator (Belinassu approach), for GNU Octave (largely 
 %% compatible with Matlab).
 %%
-%% Copyright (C) 2022 - Luca Novarini
+%% Copyright (C) 2022 - Luchika De Sousa
 %% 
 %% This program is free software: you can redistribute it and/or modify it under
 %% the terms of the GNU General Public License as published by the Free Software
@@ -21,15 +21,15 @@ clear all; close all; clc;
 
 %%%% USER PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Stock IAT parameters.
-% R25: thermistor’s resistance @ 25°C [ohm]
-% Beta: thermistor’s beta value [K].
+% R25: thermistorâ€™s resistance @ 25Â°C [ohm]
+% Beta: thermistorâ€™s beta value [K].
 R25  = 3000.0;
 Beta = 3950.0;
 
 % Desired AFR delta [%].
 AfrDelta = 6;
 
-% Temperature range and step [°C].
+% Temperature range and step [Â°C].
 % Format is Tmin : Tstep : Tmax.
 T = -20 : 0.01 : +50;
 
@@ -37,7 +37,7 @@ T = -20 : 0.01 : +50;
 % CalculateOrCheck: 0 to calculate ideal Belinassu NTC parameters, otherwise 
 %                   given parameters are used to check for resulting AFR ratio 
 %                   increment flatness.
-% R25_Belinassu:    replacement NTC resistance @ 25°C [ohm]
+% R25_Belinassu:    replacement NTC resistance @ 25Â°C [ohm]
 % Beta_Belinassu:   replacement NTC beta value [K]
 % SeriesOrParallel: if more than one value is provided for R25_Belinassu and
 %                   Beta_Belinassu, specify if given thermistors should be
@@ -72,7 +72,7 @@ if (CalculateOrCheck == 0)
     % Plot all NTCs curves.
     figure(1); hold on; grid on;
     title('NTC sensor curve');
-    xlabel('Air Temperature [°C]');
+    xlabel('Air Temperature [Â°C]');
     ylabel('Resistance [kOhm]');
     plot(T, Rstock ./ 1e3, '-r');
     plot(T, Rtarget ./ 1e3, '-b');
@@ -81,8 +81,8 @@ if (CalculateOrCheck == 0)
     % Plot all temperatures offsets.
     figure(2); hold on; grid on;
     title('Temperature offset');
-    xlabel('Air Temperature [°C]');
-    ylabel('Offset [°C]');
+    xlabel('Air Temperature [Â°C]');
+    ylabel('Offset [Â°C]');
     plot(T, Tdelta, '-b');
     legend('Target');
 else
@@ -121,14 +121,14 @@ else
     % Plot all temperatures offsets.
     figure(1); hold on; grid on;
     title('Temperature offset');
-    xlabel('Air Temperature [°C]');
-    ylabel('Offset [°C]');
+    xlabel('Air Temperature [Â°C]');
+    ylabel('Offset [Â°C]');
     plot(T, Tdelta, '-b');
     
     % Plot all temperatures offsets.
     figure(2); hold on; grid on;
     title('AFR Delta');
-    xlabel('Air Temperature [°C]');
+    xlabel('Air Temperature [Â°C]');
     ylabel('AFR Delta [%]');
     plot(T, AfrDelta, '-b');
 end
