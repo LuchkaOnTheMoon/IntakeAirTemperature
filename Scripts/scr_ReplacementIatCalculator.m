@@ -157,6 +157,16 @@ elseif (mode == 2)
         replacementNtcResistance = 1 ./ (1 ./ replacementNtcResistance ...
                                         + 1 ./ seriesBranchResistance);
     end
+    
+    if ((numOfParallBranches > 1) || (numOfSeriesThermistors > 1))
+        % Perform NTC model fitting to calculate and print R25 and Beta 
+        % parameters for the replacement NTC thermistor.
+        pkg load optim;
+        f = @(k, x) (k(1) .* exp (k(2) .* (1 ./ (x + 273.15) - 1 / 298.15)));
+        [B, R, J, COVB, MSE] = nlinfit(temperatureRange, ... 
+                                        replacementNtcResistance, f, stockNtc);
+        printf("Equivalent R25 = %.2f Ohm\nEquivalent Beta = %.2f K\n", B(1), B(2));
+    end
         
     % Calculate introduced temperature offset over given temperature range.
     temperatureDelta = ones(1, length(temperatureRange)) * NaN;
