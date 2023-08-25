@@ -2,7 +2,7 @@
 %% measured data fitting script, for GNU Octave (largely compatible with 
 %% Matlab).
 %%
-%% Copyright (C) 2022 - Luchika De Sousa
+%% Copyright (C) 2023 - Luchika De Sousa
 %% 
 %% This program is free software: you can redistribute it and/or modify it under
 %% the terms of the GNU General Public License as published by the Free Software
@@ -20,41 +20,47 @@
 clear all; close all; clc;
 
 %%%% USER PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% IAT measured data points.
-% x: air temperatures array [°C]
-% y: measured thermistor’s resistance [ohm]
-x = [0 5 10 15 20 25 30];
-y = [9399 7263 5658 4441 3511 2795 2240];
-
-% Range trim in number of samples, trim(1) left trim, trim(2) right trim.
-trim = [0, 0];
-
-% Initial model guess, for data fitting.
-% k0 = [R25, Beta];
-% R25: thermistor’s resistance @ 25°C [ohm]
-% Beta: thermistor’s beta value [K].
-k0 = [2700, 3950];
+% Source data and settings file.
+filename = '.\Data\dat_BenelliTrk502My2021Eu5Modified.m';
 
 %%%% PROCESSING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Load source data and interpolation settings from given file.
+assert(isfile(filename), 'Source file not found.');
+run(filename);
+assert(size(data, 1) == 2, 'Invalid source data array, must have two rows.');
+assert(size(data, 2) >= 2, ...
+        'Invalid source data array, must contain at least two data samples.');
+assert(size(trim) == [1, 2], 'Invalid trim settings.');
+assert(trim(1) >= 0, 'Invalid left trim value, must be >= 0.');
+assert(trim(2) >= 0, 'Invalid right trim value, must be >= 0.');
+assert(size(k0) == [1, 2], 'Invalid initial model guess settings.');
+
+% Sort measured data in ascending temperature order.
+data = sortrows(data', 1)';
+
+% Derive from measured data a proper temperature range over which later display
+% the estimated NTC curve.
+temperatureRange = min(data(1, :)) : 0.1 : max(data(1, :));
+
 % Trim measured data.
-x = x(1 + trim(1) : end + trim(2));
-y = y(1 + trim(1) : end + trim(2));
+data = data(:, 1 + trim(1) : end - trim(2));
 
 % NTC model definition.
 f = @(k, x) (k(1) .* exp (k(2) .* (1 ./ (x + 273.15) - 1 / 298.15)));
 
 % Perform model fitting.
 pkg load optim;
-[B, R, J, COVB, MSE] = nlinfit(x, y, f, k0);
+[B, R, J, COVB, MSE] = nlinfit(data(1, :), data(2, :), f, k0);
 
-% Print and plot.
+% Calculate NTC thermistor's estimated curve over previously defined temperature
+% range.
+estimatedNtcResistance = f(B, temperatureRange);
+
+% Print and plot results.
 figure(); hold on; grid on;
 printf("R25: %.1f, Beta: %.1f\r\n", B(1), B(2));
-T = -20 : 0.1 : +50;
-R = f(B, T);
-plot(T, R ./ 1e3, '-b');
-scatter(x, y ./ 1e3, 'r');
+plot(temperatureRange, estimatedNtcResistance ./ 1e3, '-b');
+scatter(data(1, :), data(2, :) ./ 1e3, 'r');
 title('IAT NTC measured data fitting');
 xlabel('Air Temperature [°C]');
 ylabel('NTC Resistance [kOhm]');
