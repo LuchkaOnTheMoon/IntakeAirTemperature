@@ -20,19 +20,19 @@
 clear all; close all; clc; 
 
 %%%% USER PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Mode: script operational mode.
+% Mode: Script operational mode.
 %       = 0 to calculate ideal replacement NTC parameters based on given stock 
-%		IAT parameters and desired AFR delta.
+%			IAT parameters and desired AFR delta.
 %		= 1 to calculate ideal replacement NTC R25 value based on given stock 
-%		IAT parameters and desired AFR delta but forcing given NTC target Beta.
+%			IAT parameters and desired AFR delta but forcing given NTC target Beta.
 %       = 2 to check how good given replacement NTC parameters are working to 
-%       obtain desired AFR ratio (check for resulting AFR ratio increment 
-%       flatness).
+%       	obtain desired AFR ratio (check for resulting AFR ratio decrement 
+%       	flatness).
 mode = 2;
 
 % Stock IAT parameters array, defined as: [R25, Beta]
-% R25: thermistor's resistance @ 25°C [ohm]
-% Beta: thermistor's beta value [K].
+% R25: Thermistor's resistance @ 25°C [ohm]
+% Beta: Thermistor's beta value [K].
 stockNtc = [2801.5, 3946.3];
 
 % Desired AFR delta [%].
@@ -48,18 +48,18 @@ targetBeta = 3950.0;
 temperatureRange = 5 : 0.01 : 45;
 
 % Replacement NTC parameters (R25 and Beta tuple(s)).
-% Only used in Mode = 2 to check resulting AFR ratio increment flatness against
+% Only used in Mode = 2 to check resulting AFR ratio decrement flatness against
 % desired AFR delta specified above.
 %
 % Simple usage: consider to use a single replacement NTC thermistor by defining
-%               ReplacementNtc = { [R25, Beta] };
-% Example:      RelacementNtc = { [4700, 3950] }; 
+%               replacementNtc = { [R25, Beta] };
+% Example:      replacementNtc = { [4700, 3950] }; 
 %
 % Advanced usage: consider to use a network of series/parallel connected 
 %                 replacement NTC thermistors, each with its own R25 and Beta
 %                 value, by defining ReplacementNtc as a complex cell array like
 %                 the following: 
-%                 ReplacementNtc = { [R25_1, Beta_1]    [R25_2, Beta_2]     [R25_3, Beta_3] ; ...
+%                 replacementNtc = { [R25_1, Beta_1]    [R25_2, Beta_2]     [R25_3, Beta_3] ; ...
 %                                    [R25_4, Beta_4]    {}                  {}              };
 %                 In this case, NTC_1, NTC_2 and NTC_3 are considered to be 
 %                 connected in series, then in parallel with NTC_4. In other 
@@ -76,7 +76,7 @@ temperatureRange = 5 : 0.01 : 45;
 %                 series of two thermistors having a R25 of 1 kOhm and 10 kOhm,
 %                 respectively, and a Beta of 3950 K and 3432 K, respectively,
 %                 you'll have to type in:
-%                 ReplacementNtc = { [1000, 3950]   [2000, 3950]    [10000, 3950]   ; ...
+%                 replacementNtc = { [1000, 3950]   [2000, 3950]    [10000, 3950]   ; ...
 %                                    [4700, 3432]   {}              {}              ; ...
 %                                    [1000, 3950]   [10000, 3432]   {}              };
 replacementNtc = { [10e3, 3950]   [2e3, 3950] ; ...
@@ -122,14 +122,6 @@ if ((mode == 0) || (mode == 1))
     plot(temperatureRange, stockNtcResistance ./ 1e3, '-r');
     plot(temperatureRange, targetNtcResistance ./ 1e3, '-b');
     legend('Stock', 'Target');
-
-    % Plot all temperatures offsets.
-    figure(2); hold on; grid on;
-    title('Temperature offset');
-    xlabel('Air Temperature [°C]');
-    ylabel('Offset [°C]');
-    plot(temperatureRange, temperatureDelta, '-b');
-    legend('Target');
 elseif (mode == 2)
     %%%% CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Calculate stock IAT resistance over a very, very extended temperature 
@@ -141,9 +133,9 @@ elseif (mode == 2)
     % Calculate total replacement NTC resistance over given temperature range.
     numOfParallBranches = size(replacementNtc, 1);
     numOfSeriesThermistors = size(replacementNtc, 2);
-    assert(numOfParallBranches > 0, 'ReplacementNtc incorrectly defined.');
-    assert(numOfSeriesThermistors > 0, 'ReplacementNtc incorrectly defined.');
-    assert(length(size(replacementNtc)) == 2, 'ReplacementNtc incorrectly defined.');
+    assert(numOfParallBranches > 0, 'replacementNtc incorrectly defined.');
+    assert(numOfSeriesThermistors > 0, 'replacementNtc incorrectly defined.');
+    assert(length(size(replacementNtc)) == 2, 'replacementNtc incorrectly defined.');
     replacementNtcResistance = +Inf * ones(1, length(temperatureRange));
     for ii = 1:numOfParallBranches
         seriesBranchResistance = zeros(1, length(temperatureRange));
@@ -157,10 +149,11 @@ elseif (mode == 2)
         replacementNtcResistance = 1 ./ (1 ./ replacementNtcResistance ...
                                         + 1 ./ seriesBranchResistance);
     end
-    
+
+	% If using a complex network of thermistors,
     if ((numOfParallBranches > 1) || (numOfSeriesThermistors > 1))
         % Perform NTC model fitting to calculate and print R25 and Beta 
-        % parameters for the replacement NTC thermistor.
+        % parameters for the replacement NTC thermistors network.
         pkg load optim;
         f = @(k, x) (k(1) .* exp (k(2) .* (1 ./ (x + 273.15) - 1 / 298.15)));
         [B, R, J, COVB, MSE] = nlinfit(temperatureRange, ... 
@@ -187,13 +180,6 @@ elseif (mode == 2)
     % Print overall AFR delta statistics.
     printf("AFR average error = %.1f%%\nAFR variance = %.1f%%\n", ...
         desiredAfrDelta - mean(afrDelta), abs(afrDelta(end) - afrDelta(1)));
-    
-    % Plot all temperatures offsets.
-    figure(1); hold on; grid on;
-    title('Temperature offset');
-    xlabel('Air Temperature [°C]');
-    ylabel('Offset [°C]');
-    plot(temperatureRange, temperatureDelta, '-b');
     
     % Plot resulting AFR VS target.
     figure(2); hold on; grid on;
