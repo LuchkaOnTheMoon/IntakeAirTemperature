@@ -21,11 +21,11 @@
 clear all; close all; clc;
 
 %%%% USER PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-stockNtcR25 = 2100.3;           % Stock IAT thermistors' resistance @ 25°C [Ohm].
-stockNtcBeta = 3422.5;          % Stock IAT thermistors' beta value [K].
-temperatureRange = 0 : 1 : 50;  % Air (ambient) temperature range [°C].
-afrDeltaRange = 0 : 1 : 10;     % Air/Fuel Ratio variation range [%].
-filename = 'SampleTable.xlsx';  % Output table (MS Excel format) filename.
+stockNtcR25 = 2100.3;                   % Stock IAT thermistors' resistance @ 25°C [Ohm].
+stockNtcBeta = 3422.5;                  % Stock IAT thermistors' beta value [K].
+temperatureRange = 0 : 1 : 50;          % Air (ambient) temperature range [°C].
+afrDeltaRange = 0 : 1 : 10;             % Air/Fuel Ratio variation range [%].
+filename = '.\Data\SampleTable.xlsx';   % Output table (MS Excel format) filename.
 
 %%%% PROCESSING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Delete previously created output file.

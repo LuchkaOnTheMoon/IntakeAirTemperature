@@ -31,7 +31,7 @@ clear all; close all; clc;
 mode = 2;
 
 % Stock IAT parameters array, defined as: [R25, Beta]
-% R25: thermistor's resistance @ 25캜 [ohm]
+% R25: thermistor's resistance @ 25째C [ohm]
 % Beta: thermistor's beta value [K].
 stockNtc = [2801.5, 3946.3];
 
@@ -43,7 +43,7 @@ desiredAfrDelta = 6;
 % calculation to R25_Target only.
 targetBeta = 3950.0;
 
-% Temperature range and step [캜].
+% Temperature range and step [째C].
 % Format is Tmin : Tstep : Tmax.
 temperatureRange = 5 : 0.01 : 45;
 
@@ -117,7 +117,7 @@ if ((mode == 0) || (mode == 1))
     % Plot all NTCs curves.
     figure(1); hold on; grid on;
     title('NTC sensor curve');
-    xlabel('Air Temperature [캜]');
+    xlabel('Air Temperature [째C]');
     ylabel('Resistance [kOhm]');
     plot(temperatureRange, stockNtcResistance ./ 1e3, '-r');
     plot(temperatureRange, targetNtcResistance ./ 1e3, '-b');
@@ -126,8 +126,8 @@ if ((mode == 0) || (mode == 1))
     % Plot all temperatures offsets.
     figure(2); hold on; grid on;
     title('Temperature offset');
-    xlabel('Air Temperature [캜]');
-    ylabel('Offset [캜]');
+    xlabel('Air Temperature [째C]');
+    ylabel('Offset [째C]');
     plot(temperatureRange, temperatureDelta, '-b');
     legend('Target');
 elseif (mode == 2)
@@ -191,14 +191,14 @@ elseif (mode == 2)
     % Plot all temperatures offsets.
     figure(1); hold on; grid on;
     title('Temperature offset');
-    xlabel('Air Temperature [캜]');
-    ylabel('Offset [캜]');
+    xlabel('Air Temperature [째C]');
+    ylabel('Offset [째C]');
     plot(temperatureRange, temperatureDelta, '-b');
     
     % Plot resulting AFR VS target.
     figure(2); hold on; grid on;
     title('AFR Delta');
-    xlabel('Air Temperature [캜]');
+    xlabel('Air Temperature [째C]');
     ylabel('AFR Delta [%]');
     plot(temperatureRange, afrDelta, '-b');
     plot(temperatureRange, ones(length(temperatureRange), 1) .* desiredAfrDelta, '-r');
